@@ -1,8 +1,6 @@
 package com.engine.utils;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.format.Formatter;
@@ -18,17 +16,11 @@ public class LPhone {
     }
 
     /**
-     * 判断是否有SD卡或SD卡是否可用。
-     *
-     * @return
+     * 判断SD卡是否存在
      */
-    public static boolean sdcard() {
+    public static boolean hasSDCard() {
         String status = Environment.getExternalStorageState();
-        if (status.equals(Environment.MEDIA_MOUNTED)) {
-            return true;
-        } else {
-            return false;
-        }
+        return status.equals(Environment.MEDIA_MOUNTED);
     }
 
     /**
@@ -83,49 +75,39 @@ public class LPhone {
         return Formatter.formatFileSize(context, blockSize * availableBlocks);
     }
 
-
-
-    public static int dp2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
-    }
-
-    public static int densityDPI(Context context) {
-        return context.getResources().getDisplayMetrics().densityDpi;
+    /**
+     * 获取SD卡的剩余容量 单位byte
+     *
+     * @return
+     */
+    public static long getSDCardAllSize() {
+        if (LPhone.hasSDCard()) {
+            StatFs stat = new StatFs(FileUtil.getRootFilePath());
+            // 获取空闲的数据块的数量
+            long availableBlocks = (long) stat.getAvailableBlocks() - 4;
+            // 获取单个数据块的大小（byte）
+            long freeBlocks = stat.getAvailableBlocks();
+            return freeBlocks * availableBlocks;
+        }
+        return 0;
     }
 
     /**
-     * 得到设备屏幕的宽度
+     * 获取指定路径所在空间的剩余可用容量字节数，单位byte
+     *
+     * @param filePath
+     * @return 容量字节 SDCard可用空间，内部存储可用空间
      */
-    public static int getScreenWidth(Context context) {
-        return context.getResources().getDisplayMetrics().widthPixels;
-    }
-
-    /**
-     * 得到设备屏幕的高度
-     */
-    public static int getScreenHeight(Context context) {
-        return context.getResources().getDisplayMetrics().heightPixels;
-    }
-
-    // 检测网络连接
-    public static boolean checkConnection(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null) {
-            return networkInfo.isAvailable();
+    public static long getFreeBytes(String filePath) {
+        // 如果是sd卡的下的路径，则获取sd卡可用容量
+        if (filePath.startsWith(FileUtil.getRootFilePath())) {
+            filePath = FileUtil.getRootFilePath();
+        } else {// 如果是内部存储的路径，则获取内存存储的可用容量
+            filePath = Environment.getDataDirectory().getAbsolutePath();
         }
-        return false;
+        StatFs stat = new StatFs(filePath);
+        long availableBlocks = (long) stat.getAvailableBlocks() - 4;
+        return stat.getBlockSize() * availableBlocks;
     }
-
-    public static boolean isWifi(Context mContext) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeNetInfo != null && activeNetInfo.getTypeName().equals("WIFI")) {
-            return true;
-        }
-        return false;
-    }
-
 
 }
