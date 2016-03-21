@@ -4,7 +4,7 @@ import android.os.Environment;
 
 public class PathUtil {
 
-	public static final String ROOT = Environment.getExternalStorageDirectory().getPath() + "/nicehair/";
+	public static final String ROOT = Environment.getExternalStorageDirectory().getPath() + "/test/";
 	public static final String CAMERA = Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera/";
 	public static final String CACHE_IMG ="/cache/images/";
 	 /**

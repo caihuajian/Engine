@@ -1,5 +1,7 @@
 package com.engine.utils;
 
+import android.util.Log;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,8 +12,6 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.Locale;
 
-import android.util.Log;
-
 /**
  * 日志管理类
  */
@@ -21,6 +21,9 @@ public class AppLog {
      * 日志开关
      */
     private static final boolean LOG_OPEN_DEBUG = true;
+    /**
+     * 存储日子开关
+     */
     private static final boolean LOG_OPEN_POINT = false;
 
     /**
@@ -37,7 +40,7 @@ public class AppLog {
     private static final String PATH_LOG_INFO = PathUtil.APP_LOG_PATH + "info/";
     private static final String PATH_LOG_WARNING = PathUtil.APP_LOG_PATH + "warning/";
     public static final String PATH_LOG_ERROR = PathUtil.APP_LOG_PATH + "error/";
-    private static final String AUTHOR = "LAN ";
+    private static final String AUTHOR = "CC:";
     public static final boolean ENABLE_DEBUG = false;
 
     public static void d(String tag, String message) {
@@ -99,7 +102,7 @@ public class AppLog {
             String time = dateFormat.format(date);
             File file = new File(path);
             if (!file.exists())
-                createDipPath(path);
+                FileUtil.createDipPath(path);
             BufferedWriter out = null;
             try {
                 out = new BufferedWriter(new OutputStreamWriter(
@@ -115,25 +118,6 @@ public class AppLog {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-        }
-    }
-
-    /**
-     * 根据文件路径 递归创建文件
-     *
-     * @param file
-     */
-    public static void createDipPath(String file) {
-        String parentFile = file.substring(0, file.lastIndexOf("/"));
-        File file1 = new File(file);
-        File parent = new File(parentFile);
-        if (!file1.exists()) {
-            parent.mkdirs();
-            try {
-                file1.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }
