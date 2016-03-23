@@ -88,7 +88,7 @@ public class AppLog {
     }
 
     public static void point(String path, String tag, String msg) {
-        if (LPhone.sdcard()) {
+        if (LPhone.hasSDCard()) {
             Date date = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("",
                     Locale.SIMPLIFIED_CHINESE);
