@@ -1,1 +1,1 @@
-include ':app', ':test'
+include ':app', ':test', ':changewallpaper', ':slidingmenu_library'
